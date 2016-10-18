@@ -1,0 +1,67 @@
+version: '2'
+services:
+    app:
+        build:
+            context: .test_lending/application
+            args:
+                - PATH_TO_PROJECT=/var/www/test_lending.app
+        container_name: testlending.app
+        volumes:
+          - ./application:/var/www/test_lending.app
+        tty: true
+    nginx:
+        build:
+            context: .test_lending/nginx
+#                args:
+#                    - PHP_UPSTREAM=php-fpm
+        container_name: testlending_nginx
+        volumes_from:
+            - app
+            - web
+        volumes:
+            - ./logs/nginx/:/var/log/nginx
+        ports:
+            - "80:80"
+            - "443:443"
+            - "7777:7777"
+        links:
+            - php-fpm
+    php-fpm:
+        build:
+            context: .test_lending/php_fpm
+        container_name: testlending_php-fpm
+        volumes_from:
+            - app
+        expose:
+            - "9000"
+        links:
+            - app
+#            extra_hosts:
+#                # IMPORTANT: Replace with your Docker Host IP (will be appended to /etc/hosts)
+#                - "dockerhost:10.0.75.1"
+#            environment:
+#                # IMPORTANT: Set the Remote Interpreter entry matching name to `laravel`
+#                - PHP_IDE_CONFIG="serverName=laravel"
+
+    mariadb:
+        build:
+            context: .test_lending/mariadb
+        container_name: testlending_mariadb
+        volumes_from:
+            - app
+        ports:
+            - "3306:3306"
+        environment:
+            MYSQL_DATABASE: sawfly
+            MYSQL_USER: sawfly
+            MYSQL_PASSWORD: secret
+            MYSQL_ROOT_PASSWORD: root
+    web:
+        build:
+            context: .test_lending/web
+            args:
+                - PATH_TO_PROJECT=/var/www/test_lending.web
+        container_name: testlending.web
+        volumes:
+          - ./web:/var/www/test_lending.web
+        tty: true
