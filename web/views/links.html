@@ -1,0 +1,18 @@
+    <form name="linkForm" class="loginForm">
+        <div class="row center">
+            <div class="col-md-2 vertical-center">Url:</div>
+            <div class="col-md-10">
+                <input type="text" name="input" ng-model="link.url" ng-pattern="patterns.url"/>
+            </div>
+        </div>
+        <div class="row center">
+            <div class="col-md-2 vertical-center">Alias:</div>
+            <div class="col-md-10">
+                <input type="text" name="input" ng-model="link.alias" ng-pattern="patterns.alias"/>
+            </div>
+        </div>
+        <div class="row width-20 center">
+            <button type="submit" class="btn bth-default" ng-click="submit()">Log in</button>
+            <button type="button" class="btn bth-default" ng-click="clear()">Clear</button>
+        </div>
+    </form>
